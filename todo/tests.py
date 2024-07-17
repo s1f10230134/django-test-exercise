@@ -112,3 +112,16 @@ class TodoViewTestCase(TestCase):
         response = client.get('/1/')
 
         self.assertEqual(response.status_code, 404)
+
+    def test_edit_post(self):
+        task = Task(title='Original Task', due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task.save()
+
+        client = Client()
+        data = {'title': 'Edited Task', 'due_at': '2024-08-01 12:00:00'}
+        response = client.post('/task/{}/edit/'.format(task.pk), data)
+
+        self.assertEqual(response.status_code, 302)
+        task.refresh_from_db()
+        self.assertEqual(task.title, 'Edited Task')
+        self.assertEqual(task.due_at, timezone.make_aware(datetime(2024, 8, 1, 12, 0, 0)))

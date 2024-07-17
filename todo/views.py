@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
 from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
@@ -21,6 +21,7 @@ def index(request):
     }
     return render(request, 'todo/index.html', context)
 
+
 def detail(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)
@@ -31,3 +32,18 @@ def detail(request, task_id):
         'task' : task,
     }
     return render(request, 'todo/detail.html', context)
+
+
+def edit(request, task_id):
+    task = get_object_or_404(Task, pk=task_id)
+
+    if request.method == 'POST':
+        task.title = request.POST['title']
+        task.due_at = make_aware(parse_datetime(request.POST['due_at']))
+        task.save()
+        return redirect('detail', task_id=task.id)
+
+    context = {
+        'task': task,
+    }
+    return render(request, 'todo/edit.html', context)
