@@ -24,7 +24,9 @@
 
     <div>
       <a href="{% url 'index' %}">Top</a> |
-      <a href="{% url 'edit' task.id %}">Edit</a>
+      <a href="{% url 'edit' task.id %}">Edit</a> |
+      <a href="{% url 'delete' task.id %}" onclick="return confirm('Are you sure you want to delete this task?');">Delete</a> |
+      <a href="{% url 'close' task.id %}">Close</a>
     </div>
   </body>
 
